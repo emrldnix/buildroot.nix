@@ -12,6 +12,8 @@
   lockfile,
   nativeBuildInputs ? [],
   extraSha256Hashes ? {},
+
+  postInstall ? '''',
 }: let
   inherit (pkgs) stdenv;
   externalDeclaration =
@@ -43,12 +45,11 @@
           util-linux
           wget # Not actually used, but still needs to be installed
           which
-        ]
-        ++ nativeBuildInputs;
+        ];
     runScript = "make";
   };
   buildrootBase = {
-    src = src;
+    inherit src;
 
     patchPhase = ''
       sed -i 's%--disable-makeinstall-chown%--disable-makeinstall-chown --disable-makeinstall-setuid%' \
@@ -127,7 +128,12 @@ in rec {
     // {
       name = name;
 
-      outputs = ["out" "sdk"];
+      outputs = [
+        "out"
+        "sdk"
+      ];
+
+      inherit nativeBuildInputs;
 
       buildPhase = ''
         export BR2_DL_DIR=/build/source/downloads
@@ -141,11 +147,17 @@ in rec {
       '';
 
       installPhase = ''
+        runHook preInstall
+
         mkdir $out $sdk
         cp -r output/images $out/
         cp -r output/host/* $sdk
         sh $sdk/relocate-sdk.sh
+
+        runHook postInstall
       '';
+
+      inherit postInstall;
 
       dontFixup = true;
     });
