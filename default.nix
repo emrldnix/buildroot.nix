@@ -13,7 +13,8 @@
   nativeBuildInputs ? [],
   extraSha256Hashes ? {},
 
-  postInstall ? '''',
+  extraBuildPhase ? '''',
+  extraInstallPhase ? '''',
 }: let
   inherit (pkgs) stdenv;
   externalDeclaration =
@@ -144,20 +145,15 @@ in rec {
 
         ${makeFHSEnv}/bin/make-with-fhs-env -j$NIX_BUILD_CORES ${envDeclarations}
         ${makeFHSEnv}/bin/make-with-fhs-env -j$NIX_BUILD_CORES ${envDeclarations} sdk
-      '';
+      '' + extraBuildPhase;
 
       installPhase = ''
-        runHook preInstall
-
         mkdir $out $sdk
         cp -r output/images $out/
         cp -r output/host/* $sdk
         sh $sdk/relocate-sdk.sh
 
-        runHook postInstall
-      '';
-
-      inherit postInstall;
+      '' + extraBuildPhase;
 
       dontFixup = true;
     });
