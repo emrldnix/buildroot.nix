@@ -56,11 +56,7 @@
     '';
 
     configurePhase = ''
-      ${makeFHSEnv}/bin/make-with-fhs-env ${envDeclarations} ${
-        if builtins.isPath defconfig
-        then "defconfig BR2_DEFCONFIG=${defconfig}"
-        else defconfig
-      }
+      ${makeFHSEnv}/bin/make-with-fhs-env ${envDeclarations} defconfig BR2_DEFCONFIG=${defconfig}
     '';
 
     hardeningDisable = ["format"];
