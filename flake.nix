@@ -4,13 +4,19 @@
 {
   description = "Flake for building Buildroot using nix";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
-  inputs.treefmt-nix.url = "github:numtide/treefmt-nix";
-  inputs.treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-  inputs.buildroot.url = "gitlab:buildroot.org/buildroot/2024.08";
-  inputs.buildroot.flake = false;
+    buildroot = {
+      url = "gitlab:buildroot.org/buildroot/2025.05";
+      flake = false;
+    };
+  };
 
   outputs = {
     self,
