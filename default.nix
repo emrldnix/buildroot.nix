@@ -13,7 +13,7 @@
   nativeBuildInputs ? [],
   extraSha256Hashes ? {},
 
-  preConfigure ? '''',
+  postConfigure ? '''',
 
   extraBuildPhase ? '''',
   extraInstallPhase ? '''',
@@ -140,7 +140,7 @@ in rec {
         "sdk"
       ];
 
-      inherit preConfigure nativeBuildInputs;
+      inherit postConfigure nativeBuildInputs;
 
       buildPhase = ''
         export BR2_DL_DIR=/build/source/downloads
