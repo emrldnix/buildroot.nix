@@ -13,6 +13,10 @@
   nativeBuildInputs ? [],
   extraSha256Hashes ? {},
 
+  kernelVersion,
+  kernelSite,
+  kernelBranch,
+
   postConfigure ? '''',
 
   extraBuildPhase ? '''',
@@ -27,7 +31,8 @@
     if patchSrc == null
     then ""
     else "BR2_GLOBAL_PATCH_DIR=${patchSrc}";
-  envDeclarations = "${externalDeclaration} ${patchDeclaration}";
+  kernelDeclaration = "KERNEL_VERSION=${kernelVersion} KERNEL_SITE=${kernelSite} KERNEL_BRANCH=${kernelBranch}";
+  envDeclarations = "${externalDeclaration} ${patchDeclaration} ${kernelDeclaration}";
   # There are too many places that hardcode /bin or /usr/bin to patch them all
   # (some of them are in unpacked tarballs and aren't revealed until individual
   # packages are enabled). Instead, just build everything in a FHS
