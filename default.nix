@@ -163,7 +163,7 @@ in rec {
         cp -r output/host/* $sdk
         sh $sdk/relocate-sdk.sh
 
-      '' + extraBuildPhase;
+      '' + extraInstallPhase;
 
       dontFixup = true;
     });
