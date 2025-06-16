@@ -13,6 +13,8 @@
   nativeBuildInputs ? [],
   extraSha256Hashes ? {},
 
+  preConfigure ? '''',
+
   extraBuildPhase ? '''',
   extraInstallPhase ? '''',
 }: let
@@ -58,7 +60,11 @@
     '';
 
     configurePhase = ''
+      runHook preConfigure
+
       ${makeFHSEnv}/bin/make-with-fhs-env ${envDeclarations} defconfig BR2_DEFCONFIG=${defconfig}
+
+      runHook postConfigure
     '';
 
     hardeningDisable = ["format"];
@@ -134,7 +140,7 @@ in rec {
         "sdk"
       ];
 
-      inherit nativeBuildInputs;
+      inherit preConfigure nativeBuildInputs;
 
       buildPhase = ''
         export BR2_DL_DIR=/build/source/downloads
